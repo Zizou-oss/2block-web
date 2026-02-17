@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Menu, X, Download, Music, Headphones, Smartphone, Play, TrendingUp, Users, Youtube, Facebook } from "lucide-react";
+import { handleAPKDownload } from './config/download';
 
 export default function App() {
   const [open, setOpen] = useState(false);
@@ -10,13 +11,8 @@ export default function App() {
   const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.8]);
 
   const handleDownload = () => {
-    const link = document.createElement('a');
-    link.href = '/2block-musique.apk';
-    link.download = '2block-musique.apk';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+  handleAPKDownload();
+};
 
   const navLink = (id, label) => (
     <a
