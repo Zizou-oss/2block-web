@@ -20,6 +20,7 @@ import {
   handleAPKDownload,
   startDirectAPKDownload,
 } from "./config/download";
+import { fetchPublicSiteMetrics, trackPublicDownload } from "./config/publicMetrics";
 
 const DOWNLOAD_PATH = "/telecharger/android";
 
@@ -54,9 +55,38 @@ export default function App() {
 function HomePage() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("accueil");
+  const [metrics, setMetrics] = useState({
+    appDownloads: null,
+    activeFans30d: null,
+    publishedSongs: null,
+  });
   const { scrollYProgress } = useScroll();
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.8]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetchPublicSiteMetrics()
+      .then((nextMetrics) => {
+        if (!cancelled) {
+          setMetrics(nextMetrics);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setMetrics({
+            appDownloads: null,
+            activeFans30d: null,
+            publishedSongs: null,
+          });
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const onDownload = () => {
     handleAPKDownload();
@@ -264,9 +294,24 @@ function HomePage() {
           </motion.div>
 
           <div className="grid gap-8 sm:grid-cols-3">
-            <Stat number="50" label="Téléchargements" icon={<Download size={32} />} delay={0} />
-            <Stat number="40" label="Fans actifs" icon={<Users size={32} />} delay={0.1} />
-            <Stat number="3.7★" label="Note moyenne" icon={<TrendingUp size={32} />} delay={0.2} />
+            <Stat
+              number={formatMetricValue(metrics.appDownloads)}
+              label="Téléchargements app"
+              icon={<Download size={32} />}
+              delay={0}
+            />
+            <Stat
+              number={formatMetricValue(metrics.activeFans30d)}
+              label="Fans actifs sur 30 jours"
+              icon={<Users size={32} />}
+              delay={0.1}
+            />
+            <Stat
+              number={formatMetricValue(metrics.publishedSongs)}
+              label="Titres disponibles"
+              icon={<TrendingUp size={32} />}
+              delay={0.2}
+            />
           </div>
         </div>
       </section>
@@ -390,6 +435,8 @@ function AndroidDownloadPage() {
   const [status, setStatus] = useState("preparing");
 
   useEffect(() => {
+    trackPublicDownload("site").catch(() => {});
+
     const timer = window.setTimeout(() => {
       setStatus("redirecting");
       startDirectAPKDownload();
@@ -550,4 +597,12 @@ function StatusRow({ icon, title, text }) {
       <p className="mt-2 text-sm leading-relaxed text-gray-400">{text}</p>
     </div>
   );
+}
+
+function formatMetricValue(value) {
+  if (typeof value !== "number" || Number.isNaN(value)) {
+    return "--";
+  }
+
+  return new Intl.NumberFormat("fr-FR").format(value);
 }
