@@ -20,7 +20,11 @@ import {
   handleAPKDownload,
   startDirectAPKDownload,
 } from "./config/download";
-import { fetchPublicSiteMetrics, trackPublicDownload } from "./config/publicMetrics";
+import {
+  fetchPublicMobileReleaseInfo,
+  fetchPublicSiteMetrics,
+  trackPublicDownload,
+} from "./config/publicMetrics";
 
 const DOWNLOAD_PATH = "/telecharger/android";
 
@@ -79,6 +83,45 @@ function HomePage() {
             appDownloads: null,
             activeFans30d: null,
             publishedSongs: null,
+          });
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+  const [releaseInfo, setReleaseInfo] = useState({
+    version: APK_CONFIG.version,
+    notes: null,
+    publishedAt: null,
+    sizeLabel: APK_CONFIG.size,
+  });
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetchPublicMobileReleaseInfo()
+      .then((release) => {
+        if (!cancelled) {
+          setReleaseInfo({
+            version: release.version || APK_CONFIG.version,
+            notes: release.notes || null,
+            publishedAt: release.publishedAt || null,
+            sizeLabel:
+              release.apkSizeBytes > 0
+                ? formatBytes(release.apkSizeBytes)
+                : APK_CONFIG.size,
+          });
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setReleaseInfo({
+            version: APK_CONFIG.version,
+            notes: null,
+            publishedAt: null,
+            sizeLabel: APK_CONFIG.size,
           });
         }
       });
@@ -178,7 +221,7 @@ function HomePage() {
             className="mb-8"
           >
             <span className="inline-block rounded-full border border-violet-500/20 bg-gradient-to-r from-violet-500/10 to-purple-500/10 px-4 py-2 text-sm font-medium text-violet-400 backdrop-blur-sm">
-              Version {APK_CONFIG.version} disponible
+              Version {releaseInfo.version} disponible
             </span>
           </motion.div>
 
@@ -233,6 +276,17 @@ function HomePage() {
               Télécharger l&apos;application
             </button>
           </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7, duration: 0.8 }}
+            className="mt-8 flex flex-wrap items-center justify-center gap-3 text-sm text-gray-400"
+          >
+            <MetaPill label="Mise à jour" value={formatReleaseDate(releaseInfo.publishedAt) || APK_CONFIG.releaseDate} />
+            <MetaPill label="Taille" value={releaseInfo.sizeLabel} />
+            <MetaPill label="Android" value="Installation directe" />
+          </motion.div>
         </motion.div>
       </section>
 
@@ -275,6 +329,61 @@ function HomePage() {
               title="Installation directe"
               text="Ton application Android est disponible directement depuis le site officiel."
               delay={0.2}
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="relative px-6 pb-12">
+        <div className="mx-auto max-w-7xl">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mb-14 text-center"
+          >
+            <h2 className="mb-4 text-4xl font-bold md:text-5xl">
+              <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                Dans l&apos;application
+              </span>
+            </h2>
+            <p className="mx-auto max-w-3xl text-lg text-gray-400">
+              Les fonctions déjà présentes dans l&apos;app sont mises en avant ici pour que
+              le visiteur comprenne ce qu&apos;il va réellement retrouver après installation.
+            </p>
+          </motion.div>
+
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            <AppFeature
+              title="Téléchargement et écoute hors ligne"
+              text="Les sons peuvent être téléchargés puis écoutés même sans connexion."
+              accent="from-violet-500/20 to-fuchsia-500/20"
+            />
+            <AppFeature
+              title="Paroles synchronisées"
+              text="Les paroles peuvent suivre la lecture pour une immersion plus naturelle."
+              accent="from-cyan-500/20 to-blue-500/20"
+            />
+            <AppFeature
+              title="Nouveaux sons signalés"
+              text="L&apos;utilisateur reçoit des alertes lorsqu&apos;un nouveau morceau ou une mise à jour arrive."
+              accent="from-emerald-500/20 to-lime-500/20"
+            />
+            <AppFeature
+              title="Favoris et reprise rapide"
+              text="Le lecteur garde une navigation fluide pour revenir rapidement à l&apos;essentiel."
+              accent="from-pink-500/20 to-rose-500/20"
+            />
+            <AppFeature
+              title="Lecteur moderne"
+              text="Écran de lecture dédié, commandes rapides et expérience pensée pour le mobile."
+              accent="from-amber-500/20 to-orange-500/20"
+            />
+            <AppFeature
+              title="Mises à jour simplifiées"
+              text="La dernière version est disponible depuis le site officiel avec un accès clair."
+              accent="from-indigo-500/20 to-violet-500/20"
             />
           </div>
         </div>
@@ -335,10 +444,24 @@ function HomePage() {
               </p>
 
               <div className="mb-10 grid gap-4 text-left sm:grid-cols-3">
-                <InfoTile label="Version" value={APK_CONFIG.version} />
-                <InfoTile label="Taille" value={APK_CONFIG.size} />
-                <InfoTile label="Publication" value={APK_CONFIG.releaseDate} />
+                <InfoTile label="Version" value={releaseInfo.version} />
+                <InfoTile label="Taille" value={releaseInfo.sizeLabel} />
+                <InfoTile
+                  label="Publication"
+                  value={formatReleaseDate(releaseInfo.publishedAt) || APK_CONFIG.releaseDate}
+                />
               </div>
+
+              {releaseInfo.notes ? (
+                <div className="mx-auto mb-10 max-w-2xl rounded-2xl border border-white/10 bg-black/20 p-5 text-left">
+                  <p className="mb-2 text-xs uppercase tracking-[0.22em] text-gray-500">
+                    Dernière mise à jour
+                  </p>
+                  <p className="text-sm leading-relaxed text-gray-300">
+                    {releaseInfo.notes}
+                  </p>
+                </div>
+              ) : null}
 
               <button
                 onClick={onDownload}
@@ -433,6 +556,45 @@ function HomePage() {
 
 function AndroidDownloadPage() {
   const [status, setStatus] = useState("preparing");
+  const [releaseInfo, setReleaseInfo] = useState({
+    version: APK_CONFIG.version,
+    notes: null,
+    publishedAt: null,
+    sizeLabel: APK_CONFIG.size,
+  });
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetchPublicMobileReleaseInfo()
+      .then((release) => {
+        if (!cancelled) {
+          setReleaseInfo({
+            version: release.version || APK_CONFIG.version,
+            notes: release.notes || null,
+            publishedAt: release.publishedAt || null,
+            sizeLabel:
+              release.apkSizeBytes > 0
+                ? formatBytes(release.apkSizeBytes)
+                : APK_CONFIG.size,
+          });
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setReleaseInfo({
+            version: APK_CONFIG.version,
+            notes: null,
+            publishedAt: null,
+            sizeLabel: APK_CONFIG.size,
+          });
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     trackPublicDownload("site").catch(() => {});
@@ -484,11 +646,26 @@ function AndroidDownloadPage() {
             </div>
 
             <div className="grid min-w-[220px] gap-3">
-              <InfoTile label="Version" value={APK_CONFIG.version} compact />
-              <InfoTile label="Taille" value={APK_CONFIG.size} compact />
-              <InfoTile label="Publication" value={APK_CONFIG.releaseDate} compact />
+              <InfoTile label="Version" value={releaseInfo.version} compact />
+              <InfoTile label="Taille" value={releaseInfo.sizeLabel} compact />
+              <InfoTile
+                label="Publication"
+                value={formatReleaseDate(releaseInfo.publishedAt) || APK_CONFIG.releaseDate}
+                compact
+              />
             </div>
           </div>
+
+          {releaseInfo.notes ? (
+            <div className="mb-8 rounded-3xl border border-white/10 bg-black/20 p-5">
+              <p className="mb-2 text-xs uppercase tracking-[0.22em] text-gray-500">
+                Ce que contient cette version
+              </p>
+              <p className="text-sm leading-relaxed text-gray-300">
+                {releaseInfo.notes}
+              </p>
+            </div>
+          ) : null}
 
           <div className="mb-8 grid gap-4 rounded-3xl border border-white/10 bg-black/20 p-5 md:grid-cols-3">
             <StatusRow
@@ -599,10 +776,70 @@ function StatusRow({ icon, title, text }) {
   );
 }
 
+function MetaPill({ label, value }) {
+  return (
+    <div className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-gray-300">
+      <span className="text-gray-500">{label} :</span> {value}
+    </div>
+  );
+}
+
+function AppFeature({ title, text, accent }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.45 }}
+      className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl"
+    >
+      <div className={`absolute inset-0 bg-gradient-to-br ${accent}`} />
+      <div className="relative z-10">
+        <h3 className="mb-3 text-xl font-bold text-white">{title}</h3>
+        <p className="leading-relaxed text-gray-300">{text}</p>
+      </div>
+    </motion.div>
+  );
+}
+
 function formatMetricValue(value) {
   if (typeof value !== "number" || Number.isNaN(value)) {
     return "--";
   }
 
   return new Intl.NumberFormat("fr-FR").format(value);
+}
+
+function formatReleaseDate(value) {
+  if (!value) {
+    return null;
+  }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+
+  return new Intl.DateTimeFormat("fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(date);
+}
+
+function formatBytes(bytes) {
+  if (!bytes || bytes <= 0) {
+    return APK_CONFIG.size;
+  }
+
+  const units = ["B", "KB", "MB", "GB"];
+  let value = bytes;
+  let unitIndex = 0;
+
+  while (value >= 1024 && unitIndex < units.length - 1) {
+    value /= 1024;
+    unitIndex += 1;
+  }
+
+  return `${value.toFixed(unitIndex === 0 ? 0 : 2)} ${units[unitIndex]}`;
 }

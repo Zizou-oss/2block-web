@@ -38,6 +38,29 @@ export async function fetchPublicSiteMetrics() {
   };
 }
 
+export async function fetchPublicMobileReleaseInfo() {
+  const response = await fetch(`${RPC_BASE_URL}/get_public_mobile_release_info`, {
+    method: "POST",
+    headers: createHeaders(),
+    body: "{}",
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Release request failed with status ${response.status}`);
+  }
+
+  const payload = await response.json();
+  const release = Array.isArray(payload) ? payload[0] : payload;
+
+  return {
+    version: release?.version ?? null,
+    notes: release?.notes ?? null,
+    publishedAt: release?.published_at ?? null,
+    apkSizeBytes: Number(release?.apk_size_bytes ?? 0),
+  };
+}
+
 export async function trackPublicDownload(source = "site") {
   const response = await fetch(`${RPC_BASE_URL}/track_public_download`, {
     method: "POST",
