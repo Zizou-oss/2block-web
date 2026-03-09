@@ -1,10 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
   ArrowLeft,
   CheckCircle2,
   Download,
-  ExternalLink,
   Facebook,
   Headphones,
   Menu,
@@ -19,7 +18,6 @@ import {
 import {
   APK_CONFIG,
   handleAPKDownload,
-  getReleasePageUrl,
   startDirectAPKDownload,
 } from "./config/download";
 
@@ -202,7 +200,7 @@ function HomePage() {
               type="button"
             >
               <Download size={22} className="group-hover:animate-bounce" />
-              Télécharger l&apos;APK
+              Télécharger l&apos;application
             </button>
           </motion.div>
         </motion.div>
@@ -245,7 +243,7 @@ function HomePage() {
             <Feature
               icon={<Smartphone size={40} />}
               title="Installation directe"
-              text="Ton APK Android est distribué depuis ton site avec un lien stable."
+              text="Ton application Android est disponible directement depuis le site officiel."
               delay={0.2}
             />
           </div>
@@ -391,8 +389,6 @@ function HomePage() {
 function AndroidDownloadPage() {
   const [status, setStatus] = useState("preparing");
 
-  const releasePageUrl = useMemo(() => getReleasePageUrl(), []);
-
   useEffect(() => {
     const timer = window.setTimeout(() => {
       setStatus("redirecting");
@@ -435,9 +431,8 @@ function AndroidDownloadPage() {
                 2Block Musique
               </h1>
               <p className="mt-3 max-w-2xl text-base leading-relaxed text-gray-300 md:text-lg">
-                Tu es sur la page officielle de téléchargement. La redirection vers
-                l&apos;APK démarre automatiquement, puis tu peux installer la version
-                Android depuis le fichier publié sur GitHub Releases.
+                Tu es sur la page officielle de téléchargement. La redirection démarre
+                automatiquement pour récupérer la dernière version de l&apos;application Android.
               </p>
             </div>
 
@@ -452,7 +447,7 @@ function AndroidDownloadPage() {
             <StatusRow
               icon={<ShieldCheck size={18} />}
               title="Source vérifiée"
-              text="Le bouton ouvre le fichier APK officiel de la release."
+              text="Le bouton ouvre le fichier officiel de l'application."
             />
             <StatusRow
               icon={<Download size={18} />}
@@ -462,7 +457,7 @@ function AndroidDownloadPage() {
             <StatusRow
               icon={<Smartphone size={18} />}
               title="Installation Android"
-              text="Autorise l’installation depuis ton navigateur si Android te le demande."
+              text="Autorise l’installation si Android te le demande sur ton téléphone."
             />
           </div>
 
@@ -478,16 +473,6 @@ function AndroidDownloadPage() {
               <Download size={20} />
               Télécharger maintenant
             </button>
-
-            <a
-              href={releasePageUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-6 py-4 font-semibold text-gray-200 transition hover:border-violet-400/40 hover:text-white"
-            >
-              <ExternalLink size={20} />
-              Voir la release GitHub
-            </a>
           </div>
         </motion.div>
       </div>
