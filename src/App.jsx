@@ -349,41 +349,47 @@ function HomePage() {
               </span>
             </h2>
             <p className="mx-auto max-w-3xl text-lg text-gray-400">
-              Les fonctions déjà présentes dans l&apos;app sont mises en avant ici pour que
-              le visiteur comprenne ce qu&apos;il va réellement retrouver après installation.
+              Les fonctions visibles ici reprennent le même esprit que le reste du site:
+              un rendu direct, clair et centré sur ce que l&apos;utilisateur va vraiment retrouver.
             </p>
           </motion.div>
 
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            <AppFeature
-              title="Téléchargement et écoute hors ligne"
-              text="Les sons peuvent être téléchargés puis écoutés même sans connexion."
-              accent="from-violet-500/20 to-fuchsia-500/20"
+          <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+            <Feature
+              icon={<Download size={40} />}
+              title="Téléchargement hors ligne"
+              text="Les morceaux restent disponibles même sans connexion."
+              delay={0}
             />
-            <AppFeature
+            <Feature
+              icon={<Music size={40} />}
               title="Paroles synchronisées"
-              text="Les paroles peuvent suivre la lecture pour une immersion plus naturelle."
-              accent="from-cyan-500/20 to-blue-500/20"
+              text="Les paroles peuvent suivre la lecture pour une écoute plus vivante."
+              delay={0.05}
             />
-            <AppFeature
-              title="Nouveaux sons signalés"
-              text="L&apos;utilisateur reçoit des alertes lorsqu&apos;un nouveau morceau ou une mise à jour arrive."
-              accent="from-emerald-500/20 to-lime-500/20"
+            <Feature
+              icon={<CheckCircle2 size={40} />}
+              title="Nouveautés signalées"
+              text="Les nouveaux sons et les mises à jour sont mis en avant rapidement."
+              delay={0.1}
             />
-            <AppFeature
-              title="Favoris et reprise rapide"
-              text="Le lecteur garde une navigation fluide pour revenir rapidement à l&apos;essentiel."
-              accent="from-pink-500/20 to-rose-500/20"
+            <Feature
+              icon={<Headphones size={40} />}
+              title="Lecteur immersif"
+              text="Un écran de lecture pensé pour le mobile et pour l&apos;écoute continue."
+              delay={0.15}
             />
-            <AppFeature
-              title="Lecteur moderne"
-              text="Écran de lecture dédié, commandes rapides et expérience pensée pour le mobile."
-              accent="from-amber-500/20 to-orange-500/20"
+            <Feature
+              icon={<Smartphone size={40} />}
+              title="Navigation fluide"
+              text="L&apos;application reste simple à utiliser, même sur téléphone."
+              delay={0.2}
             />
-            <AppFeature
+            <Feature
+              icon={<TrendingUp size={40} />}
               title="Mises à jour simplifiées"
-              text="La dernière version est disponible depuis le site officiel avec un accès clair."
-              accent="from-indigo-500/20 to-violet-500/20"
+              text="La dernière version reste accessible depuis le site officiel."
+              delay={0.25}
             />
           </div>
         </div>
@@ -781,24 +787,6 @@ function MetaPill({ label, value }) {
     <div className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-gray-300">
       <span className="text-gray-500">{label} :</span> {value}
     </div>
-  );
-}
-
-function AppFeature({ title, text, accent }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.45 }}
-      className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl"
-    >
-      <div className={`absolute inset-0 bg-gradient-to-br ${accent}`} />
-      <div className="relative z-10">
-        <h3 className="mb-3 text-xl font-bold text-white">{title}</h3>
-        <p className="leading-relaxed text-gray-300">{text}</p>
-      </div>
-    </motion.div>
   );
 }
 
