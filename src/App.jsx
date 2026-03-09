@@ -307,11 +307,11 @@ function HomePage() {
             <p className="mx-auto max-w-3xl text-lg text-gray-400">
               L&apos;application 2Block Musique centralise tous les titres,
               les exclusivités et les nouveautés dans une interface moderne,
-              fluide et immersive.
+              fluide et immersive. Toutes les fonctions principales sont regroupées ici.
             </p>
           </motion.div>
 
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
             <Feature
               icon={<Music size={40} />}
               title="Qualité studio"
@@ -325,71 +325,34 @@ function HomePage() {
               delay={0.1}
             />
             <Feature
-              icon={<Smartphone size={40} />}
-              title="Installation directe"
-              text="Ton application Android est disponible directement depuis le site officiel."
-              delay={0.2}
-            />
-          </div>
-        </div>
-      </section>
-
-      <section className="relative px-6 pb-12">
-        <div className="mx-auto max-w-7xl">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="mb-14 text-center"
-          >
-            <h2 className="mb-4 text-4xl font-bold md:text-5xl">
-              <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
-                Dans l&apos;application
-              </span>
-            </h2>
-            <p className="mx-auto max-w-3xl text-lg text-gray-400">
-              Les fonctions visibles ici reprennent le même esprit que le reste du site:
-              un rendu direct, clair et centré sur ce que l&apos;utilisateur va vraiment retrouver.
-            </p>
-          </motion.div>
-
-          <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
-            <Feature
-              icon={<Download size={40} />}
-              title="Téléchargement hors ligne"
-              text="Les morceaux restent disponibles même sans connexion."
-              delay={0}
-            />
-            <Feature
               icon={<Music size={40} />}
               title="Paroles synchronisées"
               text="Les paroles peuvent suivre la lecture pour une écoute plus vivante."
-              delay={0.05}
+              delay={0.2}
             />
             <Feature
               icon={<CheckCircle2 size={40} />}
               title="Nouveautés signalées"
               text="Les nouveaux sons et les mises à jour sont mis en avant rapidement."
-              delay={0.1}
+              delay={0.3}
             />
             <Feature
               icon={<Headphones size={40} />}
               title="Lecteur immersif"
               text="Un écran de lecture pensé pour le mobile et pour l&apos;écoute continue."
-              delay={0.15}
+              delay={0.4}
             />
             <Feature
               icon={<Smartphone size={40} />}
               title="Navigation fluide"
               text="L&apos;application reste simple à utiliser, même sur téléphone."
-              delay={0.2}
+              delay={0.5}
             />
             <Feature
               icon={<TrendingUp size={40} />}
               title="Mises à jour simplifiées"
               text="La dernière version reste accessible depuis le site officiel."
-              delay={0.25}
+              delay={0.6}
             />
           </div>
         </div>
