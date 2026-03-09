@@ -41,8 +41,8 @@ export function getReleasePageUrl() {
 /**
  * Lance le telechargement direct du fichier APK
  */
-export function startDirectAPKDownload() {
-  window.location.assign(getDirectDownloadUrl());
+export function startDirectAPKDownload(url) {
+  window.location.assign(url || getDirectDownloadUrl());
 }
 
 /**

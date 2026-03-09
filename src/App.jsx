@@ -101,6 +101,8 @@ function HomePage() {
     notes: null,
     publishedAt: null,
     sizeLabel: APK_CONFIG.size,
+    downloadUrl: null,
+    assetUrl: null,
   });
 
   useEffect(() => {
@@ -117,6 +119,8 @@ function HomePage() {
               release.apkSizeBytes > 0
                 ? formatBytes(release.apkSizeBytes)
                 : APK_CONFIG.size,
+            downloadUrl: release.downloadUrl || null,
+            assetUrl: release.assetUrl || null,
           });
         }
       })
@@ -127,6 +131,8 @@ function HomePage() {
             notes: null,
             publishedAt: null,
             sizeLabel: APK_CONFIG.size,
+            downloadUrl: null,
+            assetUrl: null,
           });
         }
       });
@@ -544,6 +550,8 @@ function AndroidDownloadPage() {
     notes: null,
     publishedAt: null,
     sizeLabel: APK_CONFIG.size,
+    downloadUrl: null,
+    assetUrl: null,
   });
 
   useEffect(() => {
@@ -560,6 +568,8 @@ function AndroidDownloadPage() {
               release.apkSizeBytes > 0
                 ? formatBytes(release.apkSizeBytes)
                 : APK_CONFIG.size,
+            downloadUrl: release.downloadUrl || null,
+            assetUrl: release.assetUrl || null,
           });
         }
       })
@@ -570,6 +580,8 @@ function AndroidDownloadPage() {
             notes: null,
             publishedAt: null,
             sizeLabel: APK_CONFIG.size,
+            downloadUrl: null,
+            assetUrl: null,
           });
         }
       });
@@ -584,11 +596,11 @@ function AndroidDownloadPage() {
 
     const timer = window.setTimeout(() => {
       setStatus("redirecting");
-      startDirectAPKDownload();
+      startDirectAPKDownload(releaseInfo.assetUrl);
     }, 1600);
 
     return () => window.clearTimeout(timer);
-  }, []);
+  }, [releaseInfo.assetUrl]);
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#06030d] text-white">
@@ -672,7 +684,7 @@ function AndroidDownloadPage() {
             <button
               onClick={() => {
                 setStatus("redirecting");
-                startDirectAPKDownload();
+                startDirectAPKDownload(releaseInfo.assetUrl);
               }}
               className="inline-flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4 font-semibold shadow-[0_0_40px_rgba(168,85,247,0.35)] transition hover:scale-[1.02]"
               type="button"

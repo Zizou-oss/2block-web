@@ -58,6 +58,8 @@ export async function fetchPublicMobileReleaseInfo() {
     notes: release?.notes ?? null,
     publishedAt: release?.published_at ?? null,
     apkSizeBytes: Number(release?.apk_size_bytes ?? 0),
+    downloadUrl: release?.download_url ?? null,
+    assetUrl: release?.asset_url ?? null,
   };
 }
 
