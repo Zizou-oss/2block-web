@@ -27,6 +27,7 @@ import {
 } from "./config/publicMetrics";
 
 const DOWNLOAD_PATH = "/telecharger/android";
+const PRIVACY_PATH = "/politique-confidentialite";
 
 function getNormalizedPathname() {
   if (typeof window === "undefined") {
@@ -51,6 +52,10 @@ export default function App() {
 
   if (pathname === DOWNLOAD_PATH) {
     return <AndroidDownloadPage />;
+  }
+
+  if (pathname === PRIVACY_PATH) {
+    return <PrivacyPolicyPage />;
   }
 
   return <HomePage />;
@@ -514,6 +519,15 @@ function HomePage() {
             </a>
           </div>
 
+          <div className="mb-6 flex justify-center">
+            <a
+              href={PRIVACY_PATH}
+              className="rounded-full border border-white/10 bg-white/5 px-5 py-2 text-sm text-gray-300 transition hover:border-violet-400/40 hover:text-white"
+            >
+              Politique de confidentialité
+            </a>
+          </div>
+          
           <p className="text-center text-sm text-gray-500">
             © {new Date().getFullYear()} 2Block — Tous droits réservés
           </p>
@@ -673,6 +687,91 @@ function AndroidDownloadPage() {
   );
 }
 
+function PrivacyPolicyPage() {
+  return (
+    <div className="relative min-h-screen overflow-hidden bg-[#06030d] text-white">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-1/3 h-80 w-80 rounded-full bg-violet-600/20 blur-[120px]" />
+        <div className="absolute right-0 bottom-0 h-72 w-72 rounded-full bg-purple-600/20 blur-[120px]" />
+      </div>
+
+      <div className="relative mx-auto max-w-5xl px-6 py-16 md:py-24">
+        <button
+          onClick={() => window.location.assign("/")}
+          className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-gray-300 transition hover:border-violet-400/40 hover:text-white"
+          type="button"
+        >
+          <ArrowLeft size={16} />
+          Retour au site
+        </button>
+
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="rounded-[32px] border border-white/10 bg-white/[0.04] p-8 backdrop-blur-2xl md:p-12"
+        >
+          <div className="mb-10">
+            <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-violet-500/20 bg-violet-500/10 px-3 py-1 text-sm text-violet-300">
+              Confidentialité
+            </span>
+            <h1 className="text-3xl font-black md:text-5xl">
+              Politique de confidentialité
+            </h1>
+            <p className="mt-4 max-w-3xl text-base leading-relaxed text-gray-300 md:text-lg">
+              Cette page explique de façon simple quelles informations peuvent être utilisées
+              dans 2Block Musique, pourquoi elles le sont, et comment elles sont protégées.
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <PolicyCard
+              title="Données utilisées"
+              text="Lors de l’utilisation de l’application, certaines informations peuvent être traitées comme l’adresse email du compte, l’activité d’écoute, les téléchargements de sons et les préférences liées à l’application."
+            />
+            <PolicyCard
+              title="Pourquoi ces données"
+              text="Elles servent à faire fonctionner le compte utilisateur, proposer l’écoute hors ligne, afficher les contenus disponibles, améliorer l’expérience et suivre l’activité générale de la plateforme."
+            />
+            <PolicyCard
+              title="Notifications"
+              text="Si l’utilisateur l’accepte, l’application peut envoyer des notifications pour signaler de nouveaux sons ou des mises à jour importantes."
+            />
+            <PolicyCard
+              title="Partage des données"
+              text="Les données ne sont pas revendues. Elles peuvent uniquement être utilisées par les services techniques nécessaires au fonctionnement normal de l’application et du site."
+            />
+            <PolicyCard
+              title="Sécurité"
+              text="Des mesures techniques sont mises en place pour limiter les accès non autorisés et protéger les informations traitées par l’application."
+            />
+            <PolicyCard
+              title="Droits de l’utilisateur"
+              text="L’utilisateur peut demander des informations sur son compte, corriger certaines données ou demander la suppression de son accès lorsqu’elle est possible."
+            />
+          </div>
+
+          <div className="mt-8 rounded-3xl border border-white/10 bg-black/20 p-6">
+            <h2 className="mb-3 text-xl font-bold text-white">Contact</h2>
+            <p className="leading-relaxed text-gray-300">
+              Pour toute question liée à la confidentialité ou au fonctionnement de l’application,
+              tu peux contacter l’équipe 2Block via les canaux officiels déjà utilisés sur le projet.
+            </p>
+          </div>
+
+          <p className="mt-8 text-sm text-gray-500">
+            Dernière mise à jour : {new Intl.DateTimeFormat("fr-FR", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            }).format(new Date())}
+          </p>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
 function Feature({ icon, title, text, delay }) {
   return (
     <motion.div
@@ -741,6 +840,15 @@ function StatusRow({ icon, title, text }) {
       </div>
       <p className="font-semibold text-white">{title}</p>
       <p className="mt-2 text-sm leading-relaxed text-gray-400">{text}</p>
+    </div>
+  );
+}
+
+function PolicyCard({ title, text }) {
+  return (
+    <div className="rounded-3xl border border-white/10 bg-black/20 p-6">
+      <h2 className="mb-3 text-xl font-bold text-white">{title}</h2>
+      <p className="leading-relaxed text-gray-300">{text}</p>
     </div>
   );
 }
