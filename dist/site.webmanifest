@@ -1,0 +1,18 @@
+{
+  "name": "2Block Musique",
+  "short_name": "2Block",
+  "description": "Application officielle Android pour écouter les titres, nouveautés et contenus 2Block.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#06030d",
+  "theme_color": "#06030d",
+  "lang": "fr",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

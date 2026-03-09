@@ -34,6 +34,7 @@ import {
 
 const DOWNLOAD_PATH = "/telecharger/android";
 const PRIVACY_PATH = "/politique-confidentialite";
+const AUTH_CALLBACK_PATH = "/auth-callback";
 
 function getNormalizedPathname() {
   if (typeof window === "undefined") {
@@ -62,6 +63,10 @@ export default function App() {
 
   if (pathname === PRIVACY_PATH) {
     return <PrivacyPolicyPage />;
+  }
+
+  if (pathname === AUTH_CALLBACK_PATH) {
+    return <AuthCallbackPage />;
   }
 
   return <HomePage />;
@@ -470,6 +475,68 @@ function HomePage() {
         </div>
       </section>
 
+      <section className="relative px-6 pb-32">
+        <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+          <div className="rounded-[28px] border border-white/10 bg-white/[0.04] p-8 backdrop-blur-xl">
+            <p className="mb-3 text-sm uppercase tracking-[0.24em] text-violet-300">
+              Installation Android
+            </p>
+            <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl">
+              Comment installer 2Block Musique
+            </h2>
+            <p className="max-w-3xl text-base leading-relaxed text-gray-300">
+              Le téléchargement se fait depuis le site officiel. Sur Android,
+              l’installation d’un fichier APK reste rapide si le téléphone
+              autorise l’installation depuis le navigateur ou le gestionnaire
+              de fichiers.
+            </p>
+
+            <div className="mt-8 grid gap-4 md:grid-cols-3">
+              <InstallStep
+                step="1"
+                title="Télécharge l’APK"
+                text="Utilise le bouton officiel pour récupérer la dernière version publiée."
+              />
+              <InstallStep
+                step="2"
+                title="Autorise l’installation"
+                text="Si Android le demande, valide l’installation depuis cette source."
+              />
+              <InstallStep
+                step="3"
+                title="Ouvre l’application"
+                text="Connecte-toi, télécharge tes sons et profite du mode hors ligne."
+              />
+            </div>
+          </div>
+
+          <div className="rounded-[28px] border border-white/10 bg-white/[0.04] p-8 backdrop-blur-xl">
+            <p className="mb-3 text-sm uppercase tracking-[0.24em] text-violet-300">
+              Pourquoi le site officiel
+            </p>
+            <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl">
+              Version propre et à jour
+            </h2>
+            <div className="space-y-4 text-base leading-relaxed text-gray-300">
+              <p>
+                Le site centralise la dernière version Android, les mises à
+                jour de l’application et les informations utiles avant
+                installation.
+              </p>
+              <p>
+                Tu retrouves aussi la date de publication, la taille du fichier
+                et les changements récents, ce qui évite les liens incertains
+                ou les APK anciens.
+              </p>
+              <p>
+                Pour les utilisateurs Android, cette page reste le point
+                d’entrée officiel pour télécharger 2Block Musique.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="about" className="relative border-t border-white/5 px-6 py-32">
         <div className="mx-auto max-w-4xl">
           <motion.div
@@ -715,7 +782,87 @@ function AndroidDownloadPage() {
               Télécharger maintenant
             </button>
           </div>
+
+          <div className="mt-8 grid gap-4 md:grid-cols-2">
+            <div className="rounded-2xl border border-white/10 bg-black/20 p-5 text-left">
+              <p className="mb-2 text-xs uppercase tracking-[0.22em] text-gray-500">
+                Avant l’installation
+              </p>
+              <p className="text-sm leading-relaxed text-gray-300">
+                Vérifie que ton téléphone Android dispose d’assez d’espace,
+                puis autorise l’installation si le système le demande.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-black/20 p-5 text-left">
+              <p className="mb-2 text-xs uppercase tracking-[0.22em] text-gray-500">
+                Après l’installation
+              </p>
+              <p className="text-sm leading-relaxed text-gray-300">
+                Ouvre l’application, connecte-toi à ton compte et récupère les
+                sons que tu veux garder hors ligne.
+              </p>
+            </div>
+          </div>
         </motion.div>
+      </div>
+    </div>
+  );
+}
+
+function AuthCallbackPage() {
+  useSeo({
+    title: "Retour vers l’application - 2Block Musique",
+    description:
+      "Page de retour vers l’application 2Block Musique après confirmation ou connexion.",
+    path: AUTH_CALLBACK_PATH,
+    robots: "noindex,nofollow",
+  });
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      window.location.assign("mymusic://auth-callback");
+    }, 900);
+
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className="relative min-h-screen overflow-hidden bg-[#06030d] text-white">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-1/3 h-80 w-80 rounded-full bg-violet-600/20 blur-[120px]" />
+        <div className="absolute right-0 bottom-0 h-72 w-72 rounded-full bg-purple-600/20 blur-[120px]" />
+      </div>
+
+      <div className="relative mx-auto flex min-h-screen max-w-3xl items-center px-6 py-16">
+        <div className="w-full rounded-[32px] border border-white/10 bg-white/[0.04] p-8 text-center backdrop-blur-2xl md:p-12">
+          <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-violet-500/20 bg-violet-500/10 px-3 py-1 text-sm text-violet-300">
+            Retour sécurisé
+          </span>
+          <h1 className="text-3xl font-black md:text-5xl">
+            Retour vers 2Block Musique
+          </h1>
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-gray-300 md:text-lg">
+            Si l’application est installée, elle va s’ouvrir automatiquement.
+            Sinon, tu peux revenir au site officiel et reprendre plus tard.
+          </p>
+
+          <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+            <button
+              onClick={() => window.location.assign("mymusic://auth-callback")}
+              className="inline-flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4 font-semibold shadow-[0_0_40px_rgba(168,85,247,0.35)] transition hover:scale-[1.02]"
+              type="button"
+            >
+              Ouvrir l’application
+            </button>
+            <button
+              onClick={() => window.location.assign("/")}
+              className="inline-flex items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-6 py-4 font-semibold text-gray-200 transition hover:border-violet-400/40 hover:text-white"
+              type="button"
+            >
+              Retour au site
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -899,6 +1046,18 @@ function MetaPill({ label, value }) {
   return (
     <div className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-gray-300">
       <span className="text-gray-500">{label} :</span> {value}
+    </div>
+  );
+}
+
+function InstallStep({ step, title, text }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
+      <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-violet-500/15 text-sm font-bold text-violet-300">
+        {step}
+      </div>
+      <h3 className="text-lg font-semibold text-white">{title}</h3>
+      <p className="mt-2 text-sm leading-relaxed text-gray-400">{text}</p>
     </div>
   );
 }

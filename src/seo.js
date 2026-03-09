@@ -39,6 +39,13 @@ function upsertJsonLd(id, payload) {
   element.textContent = JSON.stringify(payload);
 }
 
+function removeJsonLd(id) {
+  const element = document.head.querySelector(`#${id}`);
+  if (element) {
+    element.remove();
+  }
+}
+
 export function useSeo({
   title,
   description,
@@ -65,6 +72,10 @@ export function useSeo({
     upsertMeta('meta[property="og:type"]', {
       property: "og:type",
       content: type,
+    });
+    upsertMeta('meta[property="og:locale"]', {
+      property: "og:locale",
+      content: "fr_FR",
     });
     upsertMeta('meta[property="og:title"]', {
       property: "og:title",
@@ -113,6 +124,8 @@ export function useSeo({
 
     if (jsonLd) {
       upsertJsonLd("seo-jsonld", jsonLd);
+    } else {
+      removeJsonLd("seo-jsonld");
     }
   }, [description, image, jsonLd, path, robots, title, type]);
 }

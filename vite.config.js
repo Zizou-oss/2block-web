@@ -11,6 +11,7 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         download: resolve(__dirname, 'download.html'),
         privacy: resolve(__dirname, 'privacy.html'),
+        authCallback: resolve(__dirname, 'auth-callback.html'),
       },
     },
   },
