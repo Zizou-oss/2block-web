@@ -1,18 +1,68 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Menu, X, Download, Music, Headphones, Smartphone, Play, TrendingUp, Users, Youtube, Facebook } from "lucide-react";
-import { handleAPKDownload } from './config/download';
+import {
+  ArrowLeft,
+  CheckCircle2,
+  Download,
+  ExternalLink,
+  Facebook,
+  Headphones,
+  Menu,
+  Music,
+  ShieldCheck,
+  Smartphone,
+  TrendingUp,
+  Users,
+  X,
+  Youtube,
+} from "lucide-react";
+import {
+  APK_CONFIG,
+  handleAPKDownload,
+  getReleasePageUrl,
+  startDirectAPKDownload,
+} from "./config/download";
+
+const DOWNLOAD_PATH = "/telecharger/android";
+
+function getNormalizedPathname() {
+  if (typeof window === "undefined") {
+    return "/";
+  }
+
+  const pathname = window.location.pathname.replace(/\/+$/, "");
+  return pathname === "" ? "/" : pathname;
+}
 
 export default function App() {
+  const [pathname, setPathname] = useState(getNormalizedPathname);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      setPathname(getNormalizedPathname());
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  if (pathname === DOWNLOAD_PATH) {
+    return <AndroidDownloadPage />;
+  }
+
+  return <HomePage />;
+}
+
+function HomePage() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("accueil");
   const { scrollYProgress } = useScroll();
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.8]);
 
-  const handleDownload = () => {
-  handleAPKDownload();
-};
+  const onDownload = () => {
+    handleAPKDownload();
+  };
 
   const navLink = (id, label) => (
     <a
@@ -38,17 +88,17 @@ export default function App() {
 
   return (
     <div className="bg-black text-white scroll-smooth overflow-x-hidden">
-      
-      {/* Background gradient orbs */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-violet-600/20 rounded-full blur-[120px] animate-pulse"></div>
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-0 left-1/4 h-96 w-96 rounded-full bg-violet-600/20 blur-[120px] animate-pulse" />
+        <div
+          className="absolute right-1/4 bottom-0 h-96 w-96 rounded-full bg-purple-600/20 blur-[120px] animate-pulse"
+          style={{ animationDelay: "1s" }}
+        />
       </div>
 
-      {/* NAVBAR */}
-      <nav className="fixed top-0 w-full backdrop-blur-2xl bg-black/40 border-b border-white/5 z-50 shadow-lg shadow-black/20">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <motion.h1 
+      <nav className="fixed top-0 z-50 w-full border-b border-white/5 bg-black/40 backdrop-blur-2xl shadow-lg shadow-black/20">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+          <motion.h1
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="text-xl font-bold bg-gradient-to-r from-violet-400 via-purple-400 to-violet-500 bg-clip-text text-transparent"
@@ -56,31 +106,29 @@ export default function App() {
             2Block Musique
           </motion.h1>
 
-          {/* Desktop nav */}
-          <div className="hidden md:flex gap-8 mx-auto items-center">
+          <div className="mx-auto hidden items-center gap-8 md:flex">
             {navLink("accueil", "Accueil")}
             {navLink("features", "Fonctionnalités")}
             {navLink("download", "Téléchargement")}
             {navLink("about", "À propos")}
           </div>
 
-          {/* Mobile button */}
           <div className="md:hidden">
-            <button 
+            <button
               onClick={() => setOpen(!open)}
-              className="p-2 hover:bg-white/5 rounded-lg transition-colors"
+              className="rounded-lg p-2 transition-colors hover:bg-white/5"
+              type="button"
             >
               {open ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
 
-        {/* Mobile menu */}
         {open && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="md:hidden flex flex-col gap-6 px-6 pb-6 bg-black/95 backdrop-blur-xl"
+            className="flex flex-col gap-6 bg-black/95 px-6 pb-6 backdrop-blur-xl md:hidden"
           >
             {navLink("accueil", "Accueil")}
             {navLink("features", "Fonctionnalités")}
@@ -90,23 +138,19 @@ export default function App() {
         )}
       </nav>
 
-      {/* HERO */}
       <section
         id="accueil"
-        className="relative min-h-screen flex flex-col justify-center items-center text-center px-6 pt-32"
+        className="relative flex min-h-screen flex-col items-center justify-center px-6 pt-32 text-center"
       >
-        <motion.div 
-          style={{ opacity, scale }}
-          className="relative z-10 max-w-5xl"
-        >
+        <motion.div style={{ opacity, scale }} className="relative z-10 max-w-5xl">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
             className="mb-8"
           >
-            <span className="inline-block px-4 py-2 bg-gradient-to-r from-violet-500/10 to-purple-500/10 border border-violet-500/20 rounded-full text-violet-400 text-sm font-medium backdrop-blur-sm">
-              🎵 Version 1.2.0 disponible
+            <span className="inline-block rounded-full border border-violet-500/20 bg-gradient-to-r from-violet-500/10 to-purple-500/10 px-4 py-2 text-sm font-medium text-violet-400 backdrop-blur-sm">
+              Version {APK_CONFIG.version} disponible
             </span>
           </motion.div>
 
@@ -114,7 +158,7 @@ export default function App() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8 }}
-            className="text-5xl sm:text-6xl md:text-8xl font-black mb-6"
+            className="mb-6 text-5xl font-black sm:text-6xl md:text-8xl"
           >
             <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-violet-500 bg-clip-text text-transparent">
               2Block
@@ -123,21 +167,25 @@ export default function App() {
             <span className="text-white">Musique</span>
           </motion.h1>
 
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.8 }}
-            className="mt-6 max-w-2xl mx-auto text-gray-400 text-lg leading-relaxed"
+            className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-gray-400"
           >
             Depuis 2020, 2Block construit son univers musical avec une identité forte.
-            Des titres comme <span className="text-violet-400 font-semibold">Billets</span>, <span className="text-violet-400 font-semibold">Vie d'avant</span>, <span className="text-violet-400 font-semibold">Dream</span>, <span className="text-violet-400 font-semibold">Big Boss</span> et <span className="text-violet-400 font-semibold">2025</span> marquent le parcours artistique.
+            Des titres comme <span className="font-semibold text-violet-400">Billets</span>,
+            <span className="font-semibold text-violet-400"> Vie d&apos;avant</span>,
+            <span className="font-semibold text-violet-400"> Dream</span>,
+            <span className="font-semibold text-violet-400"> Big Boss</span> et
+            <span className="font-semibold text-violet-400"> 2025</span> marquent le parcours artistique.
           </motion.p>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.8 }}
-            className="mt-4 text-gray-500 text-base"
+            className="mt-4 text-base text-gray-500"
           >
             Tous les sons sont disponibles sur YouTube
           </motion.p>
@@ -146,74 +194,73 @@ export default function App() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8 }}
-            className="mt-12 flex flex-col sm:flex-row gap-4 justify-center items-center"
+            className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row"
           >
             <button
-              onClick={handleDownload}
-              className="group relative px-8 py-4 bg-gradient-to-r from-violet-600 to-purple-600 rounded-2xl flex items-center gap-3 font-semibold text-lg shadow-[0_0_40px_rgba(168,85,247,0.4)] hover:shadow-[0_0_60px_rgba(168,85,247,0.6)] transition-all duration-300 hover:scale-105"
+              onClick={onDownload}
+              className="group relative flex items-center gap-3 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-lg font-semibold shadow-[0_0_40px_rgba(168,85,247,0.4)] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_60px_rgba(168,85,247,0.6)]"
+              type="button"
             >
               <Download size={22} className="group-hover:animate-bounce" />
-              Télécharger l'APK
+              Télécharger l&apos;APK
             </button>
           </motion.div>
         </motion.div>
       </section>
 
-      {/* FEATURES */}
-      <section id="features" className="relative py-32 px-6">
-        <div className="max-w-7xl mx-auto">
+      <section id="features" className="relative px-6 py-32">
+        <div className="mx-auto max-w-7xl">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-20"
+            className="mb-20 text-center"
           >
-            <h2 className="text-4xl md:text-6xl font-bold mb-6">
+            <h2 className="mb-6 text-4xl font-bold md:text-6xl">
               <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
                 Une expérience unique
               </span>
             </h2>
-            <p className="text-gray-400 text-lg max-w-3xl mx-auto">
-              L'application 2Block Musique centralise tous les titres,
+            <p className="mx-auto max-w-3xl text-lg text-gray-400">
+              L&apos;application 2Block Musique centralise tous les titres,
               les exclusivités et les nouveautés dans une interface moderne,
               fluide et immersive.
             </p>
           </motion.div>
 
           <div className="grid gap-8 md:grid-cols-3">
-            <Feature 
-              icon={<Music size={40} />} 
-              title="Qualité Studio" 
-              text="Une restitution audio optimisée pour casque et voiture."
+            <Feature
+              icon={<Music size={40} />}
+              title="Qualité studio"
+              text="Une restitution audio optimisée pour casque, téléphone et voiture."
               delay={0}
             />
-            <Feature 
-              icon={<Headphones size={40} />} 
-              title="Mode Hors Ligne" 
-              text="Télécharge tes sons préférés et écoute-les partout."
+            <Feature
+              icon={<Headphones size={40} />}
+              title="Mode hors ligne"
+              text="Télécharge tes sons préférés et écoute-les même sans connexion."
               delay={0.1}
             />
-            <Feature 
-              icon={<Smartphone size={40} />} 
-              title="Performance Optimale" 
-              text="Application rapide, stable et adaptée à tous les écrans."
+            <Feature
+              icon={<Smartphone size={40} />}
+              title="Installation directe"
+              text="Ton APK Android est distribué depuis ton site avec un lien stable."
               delay={0.2}
             />
           </div>
         </div>
       </section>
 
-      {/* STATS */}
-      <section className="relative py-32 px-6">
-        <div className="max-w-6xl mx-auto">
+      <section className="relative px-6 py-32">
+        <div className="mx-auto max-w-6xl">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="mb-16 text-center"
           >
-            <h2 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent mb-4">
+            <h2 className="mb-4 bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-4xl font-bold text-transparent md:text-6xl">
               La communauté grandit
             </h2>
           </motion.div>
@@ -226,31 +273,34 @@ export default function App() {
         </div>
       </section>
 
-      {/* DOWNLOAD CTA */}
-      <section id="download" className="relative py-32 px-6">
-        <div className="max-w-4xl mx-auto">
+      <section id="download" className="relative px-6 py-32">
+        <div className="mx-auto max-w-4xl">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="relative bg-gradient-to-br from-violet-600/20 to-purple-600/20 backdrop-blur-xl border border-violet-500/20 rounded-3xl p-12 md:p-16 text-center overflow-hidden"
+            className="relative overflow-hidden rounded-3xl border border-violet-500/20 bg-gradient-to-br from-violet-600/20 to-purple-600/20 p-12 text-center backdrop-blur-xl md:p-16"
           >
-            {/* Decorative elements */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-violet-500/10 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl"></div>
-            
+            <div className="absolute top-0 right-0 h-64 w-64 rounded-full bg-violet-500/10 blur-3xl" />
+            <div className="absolute bottom-0 left-0 h-64 w-64 rounded-full bg-purple-500/10 blur-3xl" />
+
             <div className="relative z-10">
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                Prêt à découvrir ?
-              </h2>
-              <p className="text-gray-300 text-lg mb-10 max-w-2xl mx-auto">
+              <h2 className="mb-6 text-4xl font-bold md:text-5xl">Prêt à découvrir ?</h2>
+              <p className="mx-auto mb-10 max-w-2xl text-lg text-gray-300">
                 Accède à tous les titres officiels, exclusivités et nouveautés
                 directement depuis ton smartphone Android.
               </p>
 
+              <div className="mb-10 grid gap-4 text-left sm:grid-cols-3">
+                <InfoTile label="Version" value={APK_CONFIG.version} />
+                <InfoTile label="Taille" value={APK_CONFIG.size} />
+                <InfoTile label="Publication" value={APK_CONFIG.releaseDate} />
+              </div>
+
               <button
-                onClick={handleDownload}
-                className="inline-flex items-center gap-3 px-10 py-5 bg-white text-black rounded-2xl font-bold text-lg hover:scale-105 transition-transform duration-300 shadow-[0_0_40px_rgba(168,85,247,0.4)]"
+                onClick={onDownload}
+                className="inline-flex items-center gap-3 rounded-2xl bg-white px-10 py-5 text-lg font-bold text-black shadow-[0_0_40px_rgba(168,85,247,0.4)] transition-transform duration-300 hover:scale-105"
+                type="button"
               >
                 <Download size={24} />
                 Télécharger maintenant
@@ -260,79 +310,187 @@ export default function App() {
         </div>
       </section>
 
-      {/* ABOUT */}
-      <section id="about" className="relative py-32 px-6 border-t border-white/5">
-        <div className="max-w-4xl mx-auto">
+      <section id="about" className="relative border-t border-white/5 px-6 py-32">
+        <div className="mx-auto max-w-4xl">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="text-center"
           >
-            <h2 className="text-4xl md:text-6xl font-bold mb-12">
+            <h2 className="mb-12 text-4xl font-bold md:text-6xl">
               <span className="bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
                 À propos de 2Block
               </span>
             </h2>
 
-            <div className="space-y-6 text-gray-400 text-lg leading-relaxed">
+            <div className="space-y-6 text-lg leading-relaxed text-gray-400">
               <p>
-                2Block débute officiellement en 2020 avec le titre <span className="text-violet-400 font-semibold">Billets</span>.
-                Ce premier son marque le lancement d'un univers artistique
-                construit autour d'une identité forte et moderne.
+                2Block débute officiellement en 2020 avec le titre
+                <span className="font-semibold text-violet-400"> Billets</span>.
+                Ce premier son marque le lancement d&apos;un univers artistique
+                construit autour d&apos;une identité forte et moderne.
               </p>
 
               <p>
-                Avec le titre <span className="text-violet-400 font-semibold">Vie d'avant</span>,
+                Avec le titre <span className="font-semibold text-violet-400">Vie d&apos;avant</span>,
                 le groupe confirme son évolution musicale et suscite de nombreuses réactions.
-                Depuis, 2Block continue de développer son catalogue
-                et d'élargir sa communauté.
+                Depuis, 2Block continue de développer son catalogue et d&apos;élargir sa communauté.
               </p>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="py-12 border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-6">
-          {/* Social icons */}
-          <div className="flex justify-center gap-6 mb-8">
-            <a 
-              href="https://www.youtube.com/channel/UCyocrqnJAISwzSDuordRgyw" 
-              target="_blank" 
+      <footer className="border-t border-white/5 py-12">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mb-8 flex justify-center gap-6">
+            <a
+              href="https://www.youtube.com/channel/UCyocrqnJAISwzSDuordRgyw"
+              target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-center justify-center w-12 h-12 bg-white/5 hover:bg-red-600/20 border border-white/10 hover:border-red-500/30 rounded-full transition-all duration-300"
+              className="group flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 transition-all duration-300 hover:border-red-500/30 hover:bg-red-600/20"
             >
-              <Youtube size={24} className="text-gray-400 group-hover:text-red-500 transition-colors" />
+              <Youtube size={24} className="text-gray-400 transition-colors group-hover:text-red-500" />
             </a>
-            
-            <a 
-              href="http://www.tiktok.com/@2blockofficiel" 
-              target="_blank" 
+
+            <a
+              href="http://www.tiktok.com/@2blockofficiel"
+              target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-center justify-center w-12 h-12 bg-white/5 hover:bg-pink-600/20 border border-white/10 hover:border-pink-500/30 rounded-full transition-all duration-300"
+              className="group flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 transition-all duration-300 hover:border-pink-500/30 hover:bg-pink-600/20"
             >
-              <svg className="w-6 h-6 text-gray-400 group-hover:text-pink-500 transition-colors" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+              <svg
+                className="h-6 w-6 text-gray-400 transition-colors group-hover:text-pink-500"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
               </svg>
             </a>
-            
-            <a 
-              href="https://bit.ly/4mfVSKK" 
-              target="_blank" 
+
+            <a
+              href="https://bit.ly/4mfVSKK"
+              target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-center justify-center w-12 h-12 bg-white/5 hover:bg-blue-600/20 border border-white/10 hover:border-blue-500/30 rounded-full transition-all duration-300"
+              className="group flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5 transition-all duration-300 hover:border-blue-500/30 hover:bg-blue-600/20"
             >
-              <Facebook size={24} className="text-gray-400 group-hover:text-blue-500 transition-colors" />
+              <Facebook size={24} className="text-gray-400 transition-colors group-hover:text-blue-500" />
             </a>
           </div>
-          
-          <p className="text-center text-gray-500 text-sm">
+
+          <p className="text-center text-sm text-gray-500">
             © {new Date().getFullYear()} 2Block — Tous droits réservés
           </p>
         </div>
       </footer>
+    </div>
+  );
+}
+
+function AndroidDownloadPage() {
+  const [status, setStatus] = useState("preparing");
+
+  const releasePageUrl = useMemo(() => getReleasePageUrl(), []);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setStatus("redirecting");
+      startDirectAPKDownload();
+    }, 1600);
+
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className="relative min-h-screen overflow-hidden bg-[#06030d] text-white">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-16 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-violet-600/20 blur-[120px]" />
+        <div className="absolute right-0 bottom-0 h-72 w-72 rounded-full bg-fuchsia-600/20 blur-[120px]" />
+      </div>
+
+      <div className="relative mx-auto flex min-h-screen max-w-4xl flex-col justify-center px-6 py-16">
+        <button
+          onClick={() => window.location.assign("/")}
+          className="mb-8 inline-flex items-center gap-2 self-start rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-gray-300 transition hover:border-violet-400/40 hover:text-white"
+          type="button"
+        >
+          <ArrowLeft size={16} />
+          Retour au site
+        </button>
+
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.04] p-8 backdrop-blur-2xl md:p-10"
+        >
+          <div className="mb-8 flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+            <div>
+              <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-sm text-emerald-300">
+                <CheckCircle2 size={16} />
+                Téléchargement Android officiel
+              </span>
+              <h1 className="text-3xl font-black md:text-5xl">
+                2Block Musique
+              </h1>
+              <p className="mt-3 max-w-2xl text-base leading-relaxed text-gray-300 md:text-lg">
+                Tu es sur la page officielle de téléchargement. La redirection vers
+                l&apos;APK démarre automatiquement, puis tu peux installer la version
+                Android depuis le fichier publié sur GitHub Releases.
+              </p>
+            </div>
+
+            <div className="grid min-w-[220px] gap-3">
+              <InfoTile label="Version" value={APK_CONFIG.version} compact />
+              <InfoTile label="Taille" value={APK_CONFIG.size} compact />
+              <InfoTile label="Publication" value={APK_CONFIG.releaseDate} compact />
+            </div>
+          </div>
+
+          <div className="mb-8 grid gap-4 rounded-3xl border border-white/10 bg-black/20 p-5 md:grid-cols-3">
+            <StatusRow
+              icon={<ShieldCheck size={18} />}
+              title="Source vérifiée"
+              text="Le bouton ouvre le fichier APK officiel de la release."
+            />
+            <StatusRow
+              icon={<Download size={18} />}
+              title={status === "redirecting" ? "Redirection en cours" : "Préparation"}
+              text="Si rien ne se passe, tu peux lancer le téléchargement manuellement."
+            />
+            <StatusRow
+              icon={<Smartphone size={18} />}
+              title="Installation Android"
+              text="Autorise l’installation depuis ton navigateur si Android te le demande."
+            />
+          </div>
+
+          <div className="flex flex-col gap-4 sm:flex-row">
+            <button
+              onClick={() => {
+                setStatus("redirecting");
+                startDirectAPKDownload();
+              }}
+              className="inline-flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4 font-semibold shadow-[0_0_40px_rgba(168,85,247,0.35)] transition hover:scale-[1.02]"
+              type="button"
+            >
+              <Download size={20} />
+              Télécharger maintenant
+            </button>
+
+            <a
+              href={releasePageUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-6 py-4 font-semibold text-gray-200 transition hover:border-violet-400/40 hover:text-white"
+            >
+              <ExternalLink size={20} />
+              Voir la release GitHub
+            </a>
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 }
@@ -345,17 +503,16 @@ function Feature({ icon, title, text, delay }) {
       viewport={{ once: true }}
       transition={{ delay, duration: 0.6 }}
       whileHover={{ y: -12, scale: 1.02 }}
-      className="group relative bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-xl p-10 rounded-3xl border border-white/10 hover:border-violet-500/30 transition-all duration-300"
+      className="group relative rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] p-10 backdrop-blur-xl transition-all duration-300 hover:border-violet-500/30"
     >
-      {/* Glow effect on hover */}
-      <div className="absolute inset-0 bg-gradient-to-br from-violet-600/0 to-purple-600/0 group-hover:from-violet-600/10 group-hover:to-purple-600/10 rounded-3xl transition-all duration-300"></div>
-      
+      <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-violet-600/0 to-purple-600/0 transition-all duration-300 group-hover:from-violet-600/10 group-hover:to-purple-600/10" />
+
       <div className="relative z-10">
-        <div className="mb-6 text-violet-400 flex justify-center transform group-hover:scale-110 transition-transform duration-300">
+        <div className="mb-6 flex justify-center text-violet-400 transition-transform duration-300 group-hover:scale-110">
           {icon}
         </div>
-        <h3 className="text-xl font-bold mb-3 text-white">{title}</h3>
-        <p className="text-gray-400 leading-relaxed">{text}</p>
+        <h3 className="mb-3 text-xl font-bold text-white">{title}</h3>
+        <p className="leading-relaxed text-gray-400">{text}</p>
       </div>
     </motion.div>
   );
@@ -368,19 +525,44 @@ function Stat({ number, label, icon, delay }) {
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
       transition={{ delay, duration: 0.6 }}
-      className="relative bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-xl p-10 rounded-3xl border border-white/10 hover:border-violet-500/30 transition-all duration-300 group"
+      className="group relative rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] p-10 backdrop-blur-xl transition-all duration-300 hover:border-violet-500/30"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-violet-600/0 to-purple-600/0 group-hover:from-violet-600/10 group-hover:to-purple-600/10 rounded-3xl transition-all duration-300"></div>
-      
+      <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-violet-600/0 to-purple-600/0 transition-all duration-300 group-hover:from-violet-600/10 group-hover:to-purple-600/10" />
+
       <div className="relative z-10">
-        <div className="flex justify-center mb-4 text-violet-400">
-          {icon}
-        </div>
-        <h3 className="text-5xl font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent mb-2">
+        <div className="mb-4 flex justify-center text-violet-400">{icon}</div>
+        <h3 className="mb-2 bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-5xl font-bold text-transparent">
           {number}
         </h3>
-        <p className="text-gray-400 font-medium">{label}</p>
+        <p className="font-medium text-gray-400">{label}</p>
       </div>
     </motion.div>
+  );
+}
+
+function InfoTile({ label, value, compact = false }) {
+  return (
+    <div
+      className={`rounded-2xl border border-white/10 bg-black/20 ${
+        compact ? "px-4 py-3" : "px-5 py-4"
+      }`}
+    >
+      <p className="text-xs uppercase tracking-[0.22em] text-gray-500">{label}</p>
+      <p className={`mt-2 font-semibold text-white ${compact ? "text-sm" : "text-base"}`}>
+        {value}
+      </p>
+    </div>
+  );
+}
+
+function StatusRow({ icon, title, text }) {
+  return (
+    <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
+      <div className="mb-3 inline-flex rounded-full bg-violet-500/10 p-2 text-violet-300">
+        {icon}
+      </div>
+      <p className="font-semibold text-white">{title}</p>
+      <p className="mt-2 text-sm leading-relaxed text-gray-400">{text}</p>
+    </div>
   );
 }

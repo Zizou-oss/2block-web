@@ -1,16 +1,16 @@
-// Configuration du téléchargement APK via GitHub Releases
+// Configuration du telechargement APK via GitHub Releases
 export const APK_CONFIG = {
-  // ⚠️ IMPORTANT : Remplacez cette URL par celle que vous avez copiée depuis GitHub
-  // Format : https://github.com/USERNAME/REPO/releases/download/TAG/FILENAME.apk
-  downloadUrl: 'https://github.com/Zizou-oss/2block-web/releases/download/v1.2.0/2block-musique.apk',
-  
+  // URL directe du fichier APK publie dans GitHub Releases
+  // Format: https://github.com/OWNER/REPO/releases/download/TAG/FILENAME.apk
+  downloadUrl:
+    'https://github.com/Zizou-oss/2block-web/releases/download/v1.2.0/2block-musique.apk',
+  // URL stable de la page de telechargement sur le site
+  landingPath: '/telecharger/android',
   fileName: '2block-musique.apk',
   version: '1.2.0',
   size: '165.12 MB',
-  releaseDate: 'Février 2025',
-  
-  // Lien vers la page de release (pour voir les notes de version)
-  releasePage: 'https://github.com/Zizou-oss/2block-web/releases/tag/v1.2.0'
+  releaseDate: 'Fevrier 2025',
+  releasePage: 'https://github.com/Zizou-oss/2block-web/releases/tag/v1.2.0',
 };
 
 /**
@@ -21,15 +21,40 @@ export function getDirectDownloadUrl() {
 }
 
 /**
- * Gère le téléchargement de l'APK
- * Utilise window.location.href pour forcer le téléchargement immédiat
+ * Retourne l'URL stable de telechargement sur le site web
+ */
+export function getLandingUrl() {
+  if (typeof window === 'undefined') {
+    return APK_CONFIG.landingPath;
+  }
+
+  return new URL(APK_CONFIG.landingPath, window.location.origin).toString();
+}
+
+/**
+ * Retourne l'URL de la page de release GitHub
+ */
+export function getReleasePageUrl() {
+  return APK_CONFIG.releasePage;
+}
+
+/**
+ * Lance le telechargement direct du fichier APK
+ */
+export function startDirectAPKDownload() {
+  window.location.assign(getDirectDownloadUrl());
+}
+
+/**
+ * Redirige vers la page stable du site dediee au telechargement Android
  */
 export function handleAPKDownload() {
-  // Méthode 1 : Téléchargement direct (recommandé)
-  window.location.href = getDirectDownloadUrl();
-  
-  // Alternative : Ouvrir dans un nouvel onglet
-  // window.open(getDirectDownloadUrl(), '_blank');
+  if (window.location.pathname === APK_CONFIG.landingPath) {
+    startDirectAPKDownload();
+    return;
+  }
+
+  window.location.assign(getLandingUrl());
 }
 
 /**
