@@ -5,7 +5,11 @@
   "rewrites": [
     {
       "source": "/telecharger/android",
-      "destination": "/index.html"
+      "destination": "/download.html"
+    },
+    {
+      "source": "/politique-confidentialite",
+      "destination": "/privacy.html"
     },
     {
       "source": "/(.*)",

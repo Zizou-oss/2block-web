@@ -25,6 +25,12 @@ import {
   fetchPublicSiteMetrics,
   trackPublicDownload,
 } from "./config/publicMetrics";
+import {
+  buildDownloadJsonLd,
+  buildHomeJsonLd,
+  buildPrivacyJsonLd,
+  useSeo,
+} from "./seo";
 
 const DOWNLOAD_PATH = "/telecharger/android";
 const PRIVACY_PATH = "/politique-confidentialite";
@@ -62,6 +68,14 @@ export default function App() {
 }
 
 function HomePage() {
+  useSeo({
+    title: "2Block Musique - Application officielle Android",
+    description:
+      "Telecharge l'application officielle 2Block Musique pour ecouter les titres, nouveautes, paroles synchronisees et contenus exclusifs sur Android.",
+    path: "/",
+    jsonLd: buildHomeJsonLd(),
+  });
+
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("accueil");
   const [metrics, setMetrics] = useState({
@@ -544,6 +558,14 @@ function HomePage() {
 }
 
 function AndroidDownloadPage() {
+  useSeo({
+    title: "Telechargement Android - 2Block Musique",
+    description:
+      "Page officielle de telechargement Android de 2Block Musique. Recupere la derniere version de l'application en toute securite.",
+    path: DOWNLOAD_PATH,
+    jsonLd: buildDownloadJsonLd(),
+  });
+
   const [status, setStatus] = useState("preparing");
   const [releaseInfo, setReleaseInfo] = useState({
     version: APK_CONFIG.version,
@@ -700,6 +722,14 @@ function AndroidDownloadPage() {
 }
 
 function PrivacyPolicyPage() {
+  useSeo({
+    title: "Politique de confidentialite - 2Block Musique",
+    description:
+      "Consulte la politique de confidentialite de 2Block Musique et comprends quelles donnees sont utilisees dans l'application et le site.",
+    path: PRIVACY_PATH,
+    jsonLd: buildPrivacyJsonLd(),
+  });
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#06030d] text-white">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
