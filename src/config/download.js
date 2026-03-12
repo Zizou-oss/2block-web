@@ -4,6 +4,11 @@ export const APK_CONFIG = {
   // Format: https://github.com/OWNER/REPO/releases/download/TAG/FILENAME.apk
   downloadUrl:
     'https://github.com/Zizou-oss/2block-web/releases/download/v1.2.0/2block-musique.apk',
+  // APKs split (optionnel) - pour réduire la taille
+  downloadUrlArm64: '',
+  downloadUrlArmv7: '',
+  downloadUrlX86_64: '',
+  downloadUrlX86: '',
   // URL stable de la page de telechargement sur le site
   landingPath: '/telecharger/android',
   fileName: '2block-musique.apk',
@@ -16,8 +21,72 @@ export const APK_CONFIG = {
 /**
  * Retourne l'URL de téléchargement direct depuis GitHub Releases
  */
-export function getDirectDownloadUrl() {
-  return APK_CONFIG.downloadUrl;
+export function getDirectDownloadUrl(abi) {
+  const url = getDownloadUrlForAbi(abi);
+  return url || APK_CONFIG.downloadUrl;
+}
+
+/**
+ * Détection best-effort de l'architecture Android
+ */
+export async function detectAndroidAbi() {
+  if (typeof navigator === 'undefined') {
+    return 'unknown';
+  }
+
+  const ua = (navigator.userAgent || '').toLowerCase();
+  if (ua.includes('arm64') || ua.includes('aarch64') || ua.includes('armv8')) {
+    return 'arm64';
+  }
+  if (ua.includes('armv7') || ua.includes('armeabi') || ua.includes('armv6')) {
+    return 'armv7';
+  }
+  if (ua.includes('x86_64') || ua.includes('amd64')) {
+    return 'x86_64';
+  }
+  if (ua.includes(' x86') || ua.includes('i686')) {
+    return 'x86';
+  }
+
+  if (navigator.userAgentData?.getHighEntropyValues) {
+    try {
+      const hints = await navigator.userAgentData.getHighEntropyValues([
+        'architecture',
+        'bitness',
+        'platform',
+      ]);
+      const platform = (hints.platform || '').toLowerCase();
+      const arch = (hints.architecture || '').toLowerCase();
+      const bitness = String(hints.bitness || '');
+
+      if (platform.includes('android')) {
+        if (arch.includes('arm') && bitness === '64') return 'arm64';
+        if (arch.includes('arm') && bitness === '32') return 'armv7';
+        if (arch.includes('x86') && bitness === '64') return 'x86_64';
+        if (arch.includes('x86') && bitness === '32') return 'x86';
+      }
+    } catch (_) {
+      // ignore
+    }
+  }
+
+  return 'unknown';
+}
+
+/**
+ * Retourne l'URL APK correspondant à l'ABI si configurée
+ */
+export function getDownloadUrlForAbi(abi, fallbackUrl) {
+  const normalized = (abi || '').toLowerCase();
+  const urlMap = {
+    arm64: APK_CONFIG.downloadUrlArm64,
+    armv7: APK_CONFIG.downloadUrlArmv7,
+    x86_64: APK_CONFIG.downloadUrlX86_64,
+    x86: APK_CONFIG.downloadUrlX86,
+  };
+
+  const resolved = urlMap[normalized] || '';
+  return resolved || fallbackUrl || APK_CONFIG.downloadUrl;
 }
 
 /**
@@ -41,8 +110,8 @@ export function getReleasePageUrl() {
 /**
  * Lance le telechargement direct du fichier APK
  */
-export function startDirectAPKDownload(url) {
-  window.location.assign(url || getDirectDownloadUrl());
+export function startDirectAPKDownload(url, abi) {
+  window.location.assign(url || getDirectDownloadUrl(abi));
 }
 
 /**
@@ -61,7 +130,15 @@ export function handleAPKDownload() {
  * Vérifie si l'URL de téléchargement est valide
  */
 export function isDownloadConfigured() {
-  return APK_CONFIG.downloadUrl && 
-         APK_CONFIG.downloadUrl.includes('github.com') &&
-         APK_CONFIG.downloadUrl.includes('releases/download');
+  const urls = [
+    APK_CONFIG.downloadUrl,
+    APK_CONFIG.downloadUrlArm64,
+    APK_CONFIG.downloadUrlArmv7,
+    APK_CONFIG.downloadUrlX86_64,
+    APK_CONFIG.downloadUrlX86,
+  ].filter(Boolean);
+
+  return urls.some((url) => 
+    url.includes('github.com') && url.includes('releases/download')
+  );
 }

@@ -17,6 +17,8 @@ import {
 } from "lucide-react";
 import {
   APK_CONFIG,
+  detectAndroidAbi,
+  getDownloadUrlForAbi,
   handleAPKDownload,
   startDirectAPKDownload,
 } from "./config/download";
@@ -634,6 +636,7 @@ function AndroidDownloadPage() {
   });
 
   const [status, setStatus] = useState("preparing");
+  const [detectedAbi, setDetectedAbi] = useState("unknown");
   const [releaseInfo, setReleaseInfo] = useState({
     version: APK_CONFIG.version,
     notes: null,
@@ -681,15 +684,39 @@ function AndroidDownloadPage() {
   }, []);
 
   useEffect(() => {
+    let cancelled = false;
+    detectAndroidAbi()
+      .then((abi) => {
+        if (!cancelled) {
+          setDetectedAbi(abi);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setDetectedAbi("unknown");
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const resolvedDownloadUrl = getDownloadUrlForAbi(
+    detectedAbi,
+    releaseInfo.assetUrl || releaseInfo.downloadUrl,
+  );
+
+  useEffect(() => {
     trackPublicDownload("site").catch(() => {});
 
     const timer = window.setTimeout(() => {
       setStatus("redirecting");
-      startDirectAPKDownload(releaseInfo.assetUrl);
+      startDirectAPKDownload(resolvedDownloadUrl, detectedAbi);
     }, 1600);
 
     return () => window.clearTimeout(timer);
-  }, [releaseInfo.assetUrl]);
+  }, [resolvedDownloadUrl, detectedAbi]);
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#06030d] text-white">
@@ -773,7 +800,7 @@ function AndroidDownloadPage() {
             <button
               onClick={() => {
                 setStatus("redirecting");
-                startDirectAPKDownload(releaseInfo.assetUrl);
+                startDirectAPKDownload(resolvedDownloadUrl, detectedAbi);
               }}
               className="inline-flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4 font-semibold shadow-[0_0_40px_rgba(168,85,247,0.35)] transition hover:scale-[1.02]"
               type="button"
