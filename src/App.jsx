@@ -267,7 +267,7 @@ function HomePage() {
               2Block
             </span>
             <br />
-            <span className="text-white">Musique</span>
+            <span className="text-white">Music</span>
           </motion.h1>
 
           <motion.p
