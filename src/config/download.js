@@ -3,10 +3,10 @@ export const APK_CONFIG = {
   // URL directe du fichier APK publie dans GitHub Releases
   // Format: https://github.com/OWNER/REPO/releases/download/TAG/FILENAME.apk
   downloadUrl:
-    'https://github.com/Zizou-oss/2block-web/releases/download/v1.2.0/2block-musique.apk',
+    'https://github.com/Zizou-oss/2block-web/releases/download/V.1.3.2/2block-music-arm64-v8a.apk',
   // APKs split (optionnel) - pour réduire la taille
   downloadUrlArm64:
-    'https://github.com/Zizou-oss/2block-web/releases/download/V.1.3.2/2block-music-arm64-v8a.apk.apk',
+    'https://github.com/Zizou-oss/2block-web/releases/download/V.1.3.2/2block-music-arm64-v8a.apk',
   downloadUrlArmv7:
     'https://github.com/Zizou-oss/2block-web/releases/download/V.1.3.2/2block-music-armeabi-v7a.apk',
   downloadUrlX86_64: '',
@@ -14,10 +14,10 @@ export const APK_CONFIG = {
   // URL stable de la page de telechargement sur le site
   landingPath: '/telecharger/android',
   fileName: '2block-musique.apk',
-  version: '1.2.0',
-  size: '165.12 MB',
-  releaseDate: 'Fevrier 2025',
-  releasePage: 'https://github.com/Zizou-oss/2block-web/releases/tag/v1.2.0',
+  version: '1.3.2',
+  size: '30.2 MB',
+  releaseDate: 'Mars 2026',
+  releasePage: 'https://github.com/Zizou-oss/2block-web/releases/tag/V.1.3.2',
 };
 
 /**
