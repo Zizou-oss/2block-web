@@ -76,9 +76,9 @@ export default function App() {
 
 function HomePage() {
   useSeo({
-    title: "2Block Musique - Application officielle Android",
+    title: "2Block Music - Application officielle Android",
     description:
-      "Telecharge l'application officielle 2Block Musique pour ecouter les titres, nouveautes, paroles synchronisees et contenus exclusifs sur Android.",
+      "Telecharge l'application officielle 2Block Music pour ecouter les titres, nouveautes, paroles synchronisees et contenus exclusifs sur Android.",
     path: "/",
     jsonLd: buildHomeJsonLd(),
   });
@@ -206,7 +206,7 @@ function HomePage() {
             animate={{ opacity: 1, x: 0 }}
             className="text-xl font-bold bg-gradient-to-r from-violet-400 via-purple-400 to-violet-500 bg-clip-text text-transparent"
           >
-            2Block Musique
+            2Block Music
           </motion.h1>
 
           <div className="mx-auto hidden items-center gap-8 md:flex">
@@ -337,7 +337,7 @@ function HomePage() {
               </span>
             </h2>
             <p className="mx-auto max-w-3xl text-lg text-gray-400">
-              L&apos;application 2Block Musique centralise tous les titres,
+              L&apos;application 2Block Music centralise tous les titres,
               les exclusivités et les nouveautés dans une interface moderne,
               fluide et immersive. Toutes les fonctions principales sont regroupées ici.
             </p>
@@ -484,7 +484,7 @@ function HomePage() {
               Installation Android
             </p>
             <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl">
-              Comment installer 2Block Musique
+              Comment installer 2Block Music
             </h2>
             <p className="max-w-3xl text-base leading-relaxed text-gray-300">
               Le téléchargement se fait depuis le site officiel. Sur Android,
@@ -532,7 +532,7 @@ function HomePage() {
               </p>
               <p>
                 Pour les utilisateurs Android, cette page reste le point
-                d’entrée officiel pour télécharger 2Block Musique.
+                d’entrée officiel pour télécharger 2Block Music.
               </p>
             </div>
           </div>
@@ -628,9 +628,9 @@ function HomePage() {
 
 function AndroidDownloadPage() {
   useSeo({
-    title: "Telechargement Android - 2Block Musique",
+    title: "Telechargement Android - 2Block Music",
     description:
-      "Page officielle de telechargement Android de 2Block Musique. Recupere la derniere version de l'application en toute securite.",
+      "Page officielle de telechargement Android de 2Block Music. Recupere la derniere version de l'application en toute securite.",
     path: DOWNLOAD_PATH,
     jsonLd: buildDownloadJsonLd(),
   });
@@ -748,7 +748,7 @@ function AndroidDownloadPage() {
                 Téléchargement Android officiel
               </span>
               <h1 className="text-3xl font-black md:text-5xl">
-                2Block Musique
+                2Block Music
               </h1>
               <p className="mt-3 max-w-2xl text-base leading-relaxed text-gray-300 md:text-lg">
                 Tu es sur la page officielle de téléchargement. La redirection démarre
@@ -838,9 +838,9 @@ function AndroidDownloadPage() {
 
 function AuthCallbackPage() {
   useSeo({
-    title: "Retour vers l’application - 2Block Musique",
+    title: "Retour vers l’application - 2Block Music",
     description:
-      "Page de retour vers l’application 2Block Musique après confirmation ou connexion.",
+      "Page de retour vers l’application 2Block Music après confirmation ou connexion.",
     path: AUTH_CALLBACK_PATH,
     robots: "noindex,nofollow",
   });
@@ -866,7 +866,7 @@ function AuthCallbackPage() {
             Retour sécurisé
           </span>
           <h1 className="text-3xl font-black md:text-5xl">
-            Retour vers 2Block Musique
+            Retour vers 2Block Music
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-gray-300 md:text-lg">
             Si l’application est installée, elle va s’ouvrir automatiquement.
@@ -897,9 +897,9 @@ function AuthCallbackPage() {
 
 function PrivacyPolicyPage() {
   useSeo({
-    title: "Politique de confidentialite - 2Block Musique",
+    title: "Politique de confidentialite - 2Block Music",
     description:
-      "Consulte la politique de confidentialite de 2Block Musique et comprends quelles donnees sont utilisees dans l'application et le site.",
+      "Consulte la politique de confidentialite de 2Block Music et comprends quelles donnees sont utilisees dans l'application et le site.",
     path: PRIVACY_PATH,
     jsonLd: buildPrivacyJsonLd(),
   });
@@ -936,7 +936,7 @@ function PrivacyPolicyPage() {
             </h1>
             <p className="mt-4 max-w-3xl text-base leading-relaxed text-gray-300 md:text-lg">
               Cette page explique de façon simple quelles informations peuvent être utilisées
-              dans 2Block Musique, pourquoi elles le sont, et comment elles sont protégées.
+              dans 2Block Music, pourquoi elles le sont, et comment elles sont protégées.
             </p>
           </div>
 

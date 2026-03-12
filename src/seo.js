@@ -95,7 +95,7 @@ export function useSeo({
     });
     upsertMeta('meta[property="og:site_name"]', {
       property: "og:site_name",
-      content: "2Block Musique",
+      content: "2Block Music",
     });
     upsertMeta('meta[name="twitter:card"]', {
       name: "twitter:card",
@@ -137,7 +137,7 @@ export function buildHomeJsonLd() {
       {
         "@type": "Organization",
         "@id": `${SITE_URL}/#organization`,
-        name: "2Block Musique",
+        name: "2Block Music",
         url: SITE_URL,
         logo: DEFAULT_OG_IMAGE,
         sameAs: [
@@ -149,7 +149,7 @@ export function buildHomeJsonLd() {
       {
         "@type": "SoftwareApplication",
         "@id": `${SITE_URL}/#app`,
-        name: "2Block Musique",
+        name: "2Block Music",
         operatingSystem: "Android",
         applicationCategory: "MusicApplication",
         offers: {
@@ -168,7 +168,7 @@ export function buildHomeJsonLd() {
         "@type": "WebSite",
         "@id": `${SITE_URL}/#website`,
         url: SITE_URL,
-        name: "2Block Musique",
+        name: "2Block Music",
         inLanguage: "fr",
       },
     ],
@@ -179,7 +179,7 @@ export function buildDownloadJsonLd() {
   return {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "2Block Musique",
+    name: "2Block Music",
     operatingSystem: "Android",
     applicationCategory: "MusicApplication",
     offers: {
@@ -197,11 +197,11 @@ export function buildPrivacyJsonLd() {
   return {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    name: "Politique de confidentialite - 2Block Musique",
+    name: "Politique de confidentialite - 2Block Music",
     url: `${SITE_URL}/politique-confidentialite`,
     isPartOf: {
       "@type": "WebSite",
-      name: "2Block Musique",
+      name: "2Block Music",
       url: SITE_URL,
     },
   };
