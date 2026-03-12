@@ -5,8 +5,10 @@ export const APK_CONFIG = {
   downloadUrl:
     'https://github.com/Zizou-oss/2block-web/releases/download/v1.2.0/2block-musique.apk',
   // APKs split (optionnel) - pour réduire la taille
-  downloadUrlArm64: '',
-  downloadUrlArmv7: '',
+  downloadUrlArm64:
+    'https://github.com/Zizou-oss/2block-web/releases/download/V.1.3.2/2block-music-arm64-v8a.apk.apk',
+  downloadUrlArmv7:
+    'https://github.com/Zizou-oss/2block-web/releases/download/V.1.3.2/2block-music-armeabi-v7a.apk',
   downloadUrlX86_64: '',
   downloadUrlX86: '',
   // URL stable de la page de telechargement sur le site
